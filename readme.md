@@ -119,3 +119,10 @@ docker exec -it checkers checkersd tx checkers create-game $alice $bob --from $a
 docker exec -it checkers checkersd query checkers show-stored-game 1 --output json | jq ".storedGame.board" | sed 's/"//g' | sed 's/|/\n/g'
 ```
 
+### Move
+```
+# Move
+docker exec -it checkers checkersd tx checkers play-move 1 1 2 2 3 --from $alice
+# Check state
+docker exec -it checkers checkersd query checkers show-stored-game 1 --output json | jq ".storedGame.board" | sed 's/"//g' | sed 's/|/\n/g'
+```

@@ -17,3 +17,11 @@ var (
 	ErrInvalidRed       = sdkerrors.Register(ModuleName, 1102, "red address is invalid: %s")
 	ErrGameNotParseable = sdkerrors.Register(ModuleName, 1103, "game cannot be parsed")
 )
+
+// x/checkers module playMove errors
+var (
+	ErrGameNotFound     = sdkerrors.Register(ModuleName, 1104, "game id not found")
+	ErrCreatorNotPlayer = sdkerrors.Register(ModuleName, 1105, "message creator is not a player")
+	ErrNotPlayerTurn    = sdkerrors.Register(ModuleName, 1106, "player tried to play out of turn")
+	ErrWrongMove        = sdkerrors.Register(ModuleName, 1107, "wrong move")
+)
