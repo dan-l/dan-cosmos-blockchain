@@ -1,4 +1,6 @@
 # Build your own Cosmos Blockchain
+https://tutorials.cosmos.network/hands-on-exercise/1-ignite-cli/3-stored-game.html#
+
 **checkers** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
 ## Get started
@@ -69,6 +71,39 @@ docker exec -it checkers bash -c "cd vue && npm install"
 docker exec -it checkers bash -c "cd vue && npm run dev -- --host"
 ```
 
+```
+# (Re)generate protobuf
+docker exec -it checkers ignite generate proto-go
+```
+
+```
+# All unit test
+docker exec -it checkers go test -v ./...
+# Specific dir
+docker exec -it checkers go test -v go test github.com/dan-l/checkers/x/checkers/types
+# Clean cache
+docker exec -it checkers go clean -testcache
+```
+
 ### Faucet
 http://localhost:4500/
 
+
+## Proto
+
+- `query` : reading state
+- `tx`: update state
+- `genesis`: genesis state
+
+## State
+
+### System info 
+- See struct at `x/checkers/types/system_info.pb.go`
+- Store system wide info such as the next id for new game (which also tracks number of game history) 
+- `docker exec -it checkers checkersd query checkers show-system-info -o json`
+
+### Stored Game
+- See struct at `x/checkers/types/stored_game.pb.go`
+- Information saved about the game state such as players and the board state
+- Map keyed by index to query the game state by index
+- `docker exec -it checkers  checkersd query checkers list-stored-game -o json`
