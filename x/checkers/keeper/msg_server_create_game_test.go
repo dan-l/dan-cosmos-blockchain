@@ -43,6 +43,24 @@ func TestCreateGame(t *testing.T) {
 	require.NotNil(t, game)
 	require.Equal(t, bob, game.Black)
 	require.Equal(t, carol, game.Red)
+
+	// Check emit
+	unwrapped_ctx := sdk.UnwrapSDKContext(ctx)
+	events := sdk.StringifyEvents(unwrapped_ctx.EventManager().ABCIEvents())
+	event := events[len(events)-1]
+	require.EqualValues(
+		t,
+		sdk.StringEvent{
+			Type: types.GameCreatedEventType,
+			Attributes: []sdk.Attribute{
+				{Key: "creator", Value: alice},
+				{Key: "game-index", Value: createResponse.GameIndex},
+				{Key: "black", Value: bob},
+				{Key: "red", Value: carol},
+			},
+		},
+		event,
+	)
 }
 
 func TestCreate3Game(t *testing.T) {

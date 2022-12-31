@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,6 +51,25 @@ func TestPlayMove(t *testing.T) {
 		t,
 		rules.PieceStrings[rules.RED_PLAYER],
 		game1.Turn,
+	)
+
+	// Check events
+	unwrapped_ctx := sdk.UnwrapSDKContext(ctx)
+	events := sdk.StringifyEvents(unwrapped_ctx.EventManager().ABCIEvents())
+	event := events[len(events)-1]
+	require.EqualValues(
+		t,
+		sdk.StringEvent{
+			Type: types.PlayMovedEventType,
+			Attributes: []sdk.Attribute{
+				{Key: "creator", Value: bob},
+				{Key: "game-index", Value: gameIndex},
+				{Key: "captured-x", Value: strconv.FormatInt(int64(playMoveResponse.CapturedX), 10)},
+				{Key: "captured-y", Value: strconv.FormatInt(int64(playMoveResponse.CapturedY), 10)},
+				{Key: "winner", Value: playMoveResponse.Winner},
+			},
+		},
+		event,
 	)
 }
 

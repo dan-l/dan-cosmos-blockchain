@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -60,9 +61,22 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 	storedGame.Turn = rules.PieceStrings[game.Turn]
 	k.Keeper.SetStoredGame(ctx, storedGame)
 
+	winner := rules.PieceStrings[game.Winner()]
+	// Emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.PlayMovedEventType,
+			sdk.NewAttribute(types.PlayMovedEventCreator, msg.Creator),
+			sdk.NewAttribute(types.PlayMovedEventGameIndex, storedGame.Index),
+			sdk.NewAttribute(types.PlayMovedEventCapturedX, strconv.FormatInt(int64(captured.X), 10)),
+			sdk.NewAttribute(types.PlayMovedEventCapturedY, strconv.FormatInt(int64(captured.Y), 10)),
+			sdk.NewAttribute(types.PlayMovedEventWinner, winner),
+		),
+	)
+
 	return &types.MsgPlayMoveResponse{
 		CapturedX: int32(captured.X),
 		CapturedY: int32(captured.Y),
-		Winner:    rules.PieceStrings[game.Winner()],
+		Winner:    winner,
 	}, nil
 }
