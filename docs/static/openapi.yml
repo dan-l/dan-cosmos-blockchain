@@ -47650,6 +47650,8 @@ definitions:
         format: int32
       winner:
         type: string
+  danl.checkers.checkers.MsgRejectGameResponse:
+    type: object
   danl.checkers.checkers.Params:
     type: object
     description: Params defines the parameters for the module.
