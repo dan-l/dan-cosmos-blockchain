@@ -43,6 +43,7 @@ func TestCreateGame(t *testing.T) {
 	require.NotNil(t, game)
 	require.Equal(t, bob, game.Black)
 	require.Equal(t, carol, game.Red)
+	require.Equal(t, uint64(0), game.MoveCount)
 
 	// Check emit
 	unwrapped_ctx := sdk.UnwrapSDKContext(ctx)

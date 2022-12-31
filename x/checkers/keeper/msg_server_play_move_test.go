@@ -40,7 +40,7 @@ func TestPlayMove(t *testing.T) {
 		},
 		*playMoveResponse,
 	)
-	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(ctx), "1")
+	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(ctx), gameIndex)
 	require.True(t, found)
 	require.EqualValues(
 		t,
@@ -52,6 +52,7 @@ func TestPlayMove(t *testing.T) {
 		rules.PieceStrings[rules.RED_PLAYER],
 		game1.Turn,
 	)
+	require.EqualValues(t, uint64(1), game1.MoveCount)
 
 	// Check events
 	unwrapped_ctx := sdk.UnwrapSDKContext(ctx)
@@ -117,7 +118,7 @@ func TestPlayMoveGameNotFound(t *testing.T) {
 }
 
 func TestPlayMoveCreatorNotPlayer(t *testing.T) {
-	msgServer, _, ctx, gameIndex := setupMsgServerPlayMove(t)
+	msgServer, keeper, ctx, gameIndex := setupMsgServerPlayMove(t)
 
 	playMoveResponse, err := msgServer.PlayMove(
 		ctx,
@@ -132,10 +133,12 @@ func TestPlayMoveCreatorNotPlayer(t *testing.T) {
 	)
 	require.Nil(t, playMoveResponse)
 	require.ErrorContains(t, err, types.ErrCreatorNotPlayer.Error())
+	game, _ := keeper.GetStoredGame(sdk.UnwrapSDKContext(ctx), gameIndex)
+	require.EqualValues(t, uint64(0), game.MoveCount)
 }
 
 func TestPlayMoveNotPlayerTurn(t *testing.T) {
-	msgServer, _, ctx, gameIndex := setupMsgServerPlayMove(t)
+	msgServer, keeper, ctx, gameIndex := setupMsgServerPlayMove(t)
 
 	playMoveResponse, err := msgServer.PlayMove(
 		ctx,
@@ -150,10 +153,12 @@ func TestPlayMoveNotPlayerTurn(t *testing.T) {
 	)
 	require.Nil(t, playMoveResponse)
 	require.ErrorContains(t, err, types.ErrNotPlayerTurn.Error())
+	game, _ := keeper.GetStoredGame(sdk.UnwrapSDKContext(ctx), gameIndex)
+	require.EqualValues(t, uint64(0), game.MoveCount)
 }
 
 func TestPlayMoveWrongMove(t *testing.T) {
-	msgServer, _, ctx, gameIndex := setupMsgServerPlayMove(t)
+	msgServer, keeper, ctx, gameIndex := setupMsgServerPlayMove(t)
 
 	playMoveResponse, err := msgServer.PlayMove(
 		ctx,
@@ -168,6 +173,8 @@ func TestPlayMoveWrongMove(t *testing.T) {
 	)
 	require.Nil(t, playMoveResponse)
 	require.ErrorContains(t, err, types.ErrWrongMove.Error())
+	game, _ := keeper.GetStoredGame(sdk.UnwrapSDKContext(ctx), gameIndex)
+	require.EqualValues(t, uint64(0), game.MoveCount)
 }
 
 func setupMsgServerPlayMove(t *testing.T) (types.MsgServer, keeper.Keeper, context.Context, string) {
