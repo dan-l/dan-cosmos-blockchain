@@ -107,3 +107,15 @@ http://localhost:4500/
 - Information saved about the game state such as players and the board state
 - Map keyed by index to query the game state by index
 - `docker exec -it checkers  checkersd query checkers list-stored-game -o json`
+
+### Create Game
+```
+# Get the addresses
+export alice=$(docker exec checkers checkersd keys show alice -a)
+export bob=$(docker exec checkers checkersd keys show bob -a)
+# Create game
+docker exec -it checkers checkersd tx checkers create-game $alice $bob --from $alice --gas auto
+# show board
+docker exec -it checkers checkersd query checkers show-stored-game 1 --output json | jq ".storedGame.board" | sed 's/"//g' | sed 's/|/\n/g'
+```
+
