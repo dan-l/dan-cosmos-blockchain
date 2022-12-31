@@ -47634,6 +47634,11 @@ definitions:
     description: >-
       MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount
       response type.
+  danl.checkers.checkers.MsgCreateGameResponse:
+    type: object
+    properties:
+      gameIndex:
+        type: string
   danl.checkers.checkers.Params:
     type: object
     description: Params defines the parameters for the module.
