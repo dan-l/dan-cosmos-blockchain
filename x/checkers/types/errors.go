@@ -25,3 +25,9 @@ var (
 	ErrNotPlayerTurn    = sdkerrors.Register(ModuleName, 1106, "player tried to play out of turn")
 	ErrWrongMove        = sdkerrors.Register(ModuleName, 1107, "wrong move")
 )
+
+// x/checkers module rejectGame errors
+var (
+	ErrBlackAlreadyPlayed = sdkerrors.Register(ModuleName, 1108, "black player has already played")
+	ErrRedAlreadyPlayed   = sdkerrors.Register(ModuleName, 1109, "red player has already played")
+)
